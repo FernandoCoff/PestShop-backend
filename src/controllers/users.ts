@@ -1,5 +1,5 @@
 import UsersDataAccess from '../dataAccess/users'
-import { ok, notFound, serverError } from '../helpers/httpResponse'
+import { ok, serverError } from '../helpers/httpResponse'
 
 export default class UsersControllers {
 

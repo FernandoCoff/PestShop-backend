@@ -6,6 +6,8 @@ export interface IUser extends Document {
   tel: string
   name: string,
   salt: Buffer
+  createdAt: Date
+  updatedAt: Date
 }
 
 const UserSchema: Schema = new Schema({
@@ -14,6 +16,6 @@ const UserSchema: Schema = new Schema({
   tel: { type: String, required: true },
   name: { type: String, required: true },
   salt: { type: Buffer, required: true }
-})
+},{ timestamps: true})
 
 export default mongoose.model<IUser>('User', UserSchema)
