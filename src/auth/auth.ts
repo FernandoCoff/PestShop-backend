@@ -41,7 +41,7 @@ passport.use(
       // Geramos um novo hash usando a senha que o usuário tentou usar no login
       // e o 'salt' que está salvo no banco de dados. Os parâmetros (iterações, tamanho, algoritmo)
       // devem ser exatamente os mesmos usados durante o cadastro.
-      const hashedPassword = await pbkdf2Promise(password, saltBuffer, 310000, 16, 'sha256')
+      const hashedPassword = await pbkdf2Promise(password, saltBuffer, 310000, 64, 'sha256')
 
       // Recuperamos o hash da senha que está salvo no banco de dados.
       const userPasswordBuffer = user.password
@@ -96,7 +96,7 @@ authRouter.post('/signup', async (req: Request, res: Response) => {
     // Gera um 'salt' aleatório de 16 bytes para o novo usuário.
     const salt = crypto.randomBytes(16)
     // Gera o hash da senha do novo usuário usando o 'salt' recém-criado.
-    const hashedPassword = await pbkdf2Promise(password, salt, 310000, 16, 'sha256')
+    const hashedPassword = await pbkdf2Promise(password, salt, 310000, 64, 'sha256')
 
     // 'User.create' é o método do Mongoose para criar e salvar um novo documento no banco de dados.
     const newUser = await User.create({
@@ -129,8 +129,7 @@ authRouter.post('/signup', async (req: Request, res: Response) => {
     return res.status(201).json({
       success: true,
       message: 'Usuário registrado com sucesso!',
-      token,
-      user: userResponse,
+      token
     })
 
   } catch (error) {
@@ -144,37 +143,58 @@ authRouter.post('/signup', async (req: Request, res: Response) => {
   }
 })
 
+// authRouter.post('/login', ...)
+// Define uma rota POST para o endpoint '/login'.
+// Esta rota é responsável por autenticar um usuário.
 authRouter.post('/login', async (req: Request, res: Response) => {
+  // passport.authenticate('local', ...)
+  // Utiliza a estratégia de autenticação local do Passport.
+  // A função de callback recebe os parâmetros 'error' e 'user' do Passport.
   passport.authenticate('local', (error: string, user: object) => {
-    try{
-      if(error){
+    try {
+      // if(error){ ... }
+      // Verifica se ocorreu um erro durante a autenticação.
+      // Se houver, retorna uma resposta com status 409 (Conflict) e uma mensagem de falha.
+      if (error) {
         return res.status(409).json({
           success: false,
           message: 'Falha na autenticação',
         })
       }
 
-      if(!user){
+      // if(!user){ ... }
+      // Verifica se o usuário não foi encontrado ou se as credenciais estão incorretas.
+      // Se não houver um objeto de usuário, retorna uma resposta com status 400 (Bad Request).
+      if (!user) {
         return res.status(400).json({
           success: false,
           message: 'Email e/ou senha incorretos!',
         })
       }
 
+      // const token = jwt.sign(...)
+      // Se a autenticação for bem-sucedida, gera um token JWT.
+      // O token contém os dados do usuário e tem um tempo de expiração de 1 dia.
+      // A chave secreta para assinar o token é obtida da variável de ambiente JWT_SECRET ou usa 'secret' como padrão.
       const token = jwt.sign(user, process.env.JWT_SECRET || 'secret', {
-      expiresIn: '1d', // O token será válido por 1 dia.
+        expiresIn: '1d', // O token será válido por 1 dia.
       })
-      return res.status(200).json({
-          success: true,
-          message: 'Usuário autenticado corretamente!',
-          user,
-          token
-        })
 
-    }catch(error){
+      // return res.status(200).json({ ... })
+      // Retorna uma resposta com status 200 (OK) indicando que o usuário foi autenticado com sucesso.
+      // A resposta inclui uma mensagem de sucesso, os dados do usuário e o token JWT gerado.
+      return res.status(200).json({
+        success: true,
+        message: 'Usuário autenticado corretamente!',
+        user,
+        token
+      })
+    } catch (error) {
+      // console.error(...)
+      // Captura e exibe no console qualquer erro inesperado que possa ocorrer no bloco try.
       console.error('Erro ao efetuar login ' + error)
     }
-  })(req, res)
+  })(req, res) // Invoca o middleware do Passport com os objetos de requisição e resposta.
 })
 
 // Exporta o 'authRouter' para que ele possa ser importado e utilizado no
