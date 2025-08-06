@@ -4,6 +4,7 @@ import cors from 'cors'
 import mongoose from 'mongoose'
 import 'dotenv/config'
 import { Error } from './utils/auxiliar'
+import authRouter from './auth/auth'
 
 // FUNÇÃO MAIN
 const main = async () => {
@@ -35,6 +36,8 @@ const main = async () => {
   app.get('/', ( req : Request, res : Response ) => {
     res.status(200).json({message : 'success'})
   })
+
+  app.use('/auth', authRouter)
 
   // DEFINE A PORTA E EXIBE MENSAGEM DE QUE O SERVIDOR ESTÁ RODANDO
   app.listen(port, () => console.log('SERVER IS RUNNING!'))
