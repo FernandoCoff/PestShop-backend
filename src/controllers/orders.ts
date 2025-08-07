@@ -1,4 +1,4 @@
-import OrdersDataAccess from '../dataAccess/Orders'
+import OrdersDataAccess from '../dataAccess/orders'
 import { ok, notFound, serverError } from '../helpers/httpResponse'
 
 type OrdemItem = {
@@ -33,6 +33,19 @@ export default class OrdersControllers {
         return serverError(error.message)
       }
       return notFound('Ocorreu um erro inesperado ao efetuar a compra!')
+    }
+  }
+
+  async getUserOrders(userID:string){
+    try{
+      const userOrders = await this.dataAccess.getUserOrders(userID)
+      return ok(userOrders)
+
+    }catch(error){
+      if (error instanceof Error) {
+        return serverError(error.message)
+      }
+      return notFound('Nenhuma ordem encontrada!')
     }
   }
 

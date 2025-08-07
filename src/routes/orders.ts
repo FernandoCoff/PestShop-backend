@@ -26,6 +26,11 @@ ordersRouter.put('/:id', async ( req : Request , res : Response ) => {
   res.status(response.status).json(response)
 })
 
+ordersRouter.get('/:id', async ( req : Request , res : Response ) => {
+  const response = await ordersControllers.getUserOrders(req.params.id)
+  res.status(response.status).json(response)
+})
+
 
 
 export default ordersRouter

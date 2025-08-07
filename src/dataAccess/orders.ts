@@ -76,7 +76,7 @@ export default class OrdersDataAccess {
 
     // --- 4. Criação e persistência do novo pedido no banco ---
     const newOrder = new Order({
-      client: {name: user.name, tel: user.tel, email: user.email },
+      client: {name: user.name, tel: user.tel, email: user.email, id: user.id},
       payment,
       shippingAddress,
       orderItems: finalOrderItems,
@@ -100,6 +100,11 @@ export default class OrdersDataAccess {
    */
   async getOrdersActive() {
     const result = await Order.find({ status: { $nin: ['Entregue', 'Cancelado'] } }).exec()
+    return result
+  }
+
+  async getUserOrders(userID : string){
+    const result = await Order.find({ 'client.id': userID })
     return result
   }
 
