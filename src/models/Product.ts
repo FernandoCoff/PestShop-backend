@@ -1,8 +1,8 @@
 import { Schema, model, Document } from 'mongoose'
 
+// 1. A INTERFACE (o contrato para o TypeScript)
 export interface IProduct extends Document {
-  title: string
-  quantity: number
+  title: string       // <-- CORRIGIDO: de 'name' para 'title'
   description: string
   price: number
   category: string[]
@@ -17,8 +17,7 @@ export interface IProduct extends Document {
 
 // 2. O SCHEMA (o molde para o banco de dados)
 const ProductSchema = new Schema({
-  title: { type: String, required: true },
-  quantity: { type: Number, required: true },
+  title: { type: String, required: true }, // <-- Este já estava correto
   description: { type: String, required: true },
   price: { type: Number, required: true },
   brand: { type: String, required: true },
@@ -33,7 +32,6 @@ const ProductSchema = new Schema({
   timestamps: true,
 })
 
-
+// A conexão entre a Interface e o Schema
 const Product = model<IProduct>('Product', ProductSchema)
-
 export default Product

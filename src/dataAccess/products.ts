@@ -21,10 +21,10 @@ export default class ProductsDataAccess {
     return result
   }
 
-  async updateProduct(userId: string, userData: object) {
+  async updateProduct(productId: string, productData: object) {
   const result = await Product.findByIdAndUpdate(
-    userId,
-    { $set: userData },
+    productId,
+    { $set: productData },
     { new: true } // Garante que o documento retornado seja a versão atualizada
   ).exec()
 

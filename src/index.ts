@@ -7,6 +7,7 @@ import { Error } from './helpers/auxiliar'
 import authRouter from './auth/auth'
 import usersRouter from './routes/users'
 import productsRouter from './routes/product'
+import ordersRouter from './routes/orders'
 
 // FUNÇÃO MAIN
 const main = async () => {
@@ -42,6 +43,7 @@ const main = async () => {
   app.use('/auth', authRouter)
   app.use('/users', usersRouter)
   app.use('/products', productsRouter)
+  app.use('/orders', ordersRouter)
 
   // DEFINE A PORTA E EXIBE MENSAGEM DE QUE O SERVIDOR ESTÁ RODANDO
   app.listen(port, () => console.log('SERVER IS RUNNING!'))
